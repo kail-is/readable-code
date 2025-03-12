@@ -17,10 +17,8 @@ public class StudyCafePassMachine {
 
     public void run() {
         try {
-            outputHandler.showWelcomeMessage();
-            outputHandler.showAnnouncement();
-            outputHandler.askPassTypeSelection();
 
+            outputHandler.showGreeting();
             StudyCafePassType studyCafePassType = inputHandler.getPassTypeSelectingUserAction();
 
             StudyCafeFileHandler studyCafeFileHandler = new StudyCafeFileHandler(studyCafePassType);
@@ -29,31 +27,24 @@ public class StudyCafePassMachine {
             outputHandler.showPassListForSelection(hourlyPasses);
             StudyCafePass selectedPass = inputHandler.getSelectPass(hourlyPasses);
 
-            if (studyCafePassType == StudyCafePassType.HOURLY || studyCafePassType == StudyCafePassType.WEEKLY) {
-                outputHandler.showPassOrderSummary(selectedPass, null);
+            if (studyCafePassType.isHourly() || studyCafePassType.isWeekly()) {
+                outputHandler.showPassOrderSummary(selectedPass);
+                return;
             }
 
-            if (studyCafePassType == StudyCafePassType.FIXED) {
-                List<StudyCafeLockerPass> lockerPasses = studyCafeFileHandler.readLockerPasses();
-                StudyCafeLockerPass lockerPass = lockerPasses.stream()
-                        .filter(option ->
-                                option.getPassType() == selectedPass.getPassType()
-                                        && option.getDuration() == selectedPass.getDuration()
-                        )
-                        .findFirst()
-                        .orElse(null);
-
+            if (studyCafePassType.isFixed()) {
+                StudyCafeLockerPass lockerPass = studyCafeFileHandler.getLockerPass(selectedPass);
                 if(lockerPass == null) {
-                    outputHandler.showPassOrderSummary(selectedPass, null);
+                    outputHandler.showPassOrderSummary(selectedPass);
                     return;
                 }
                 outputHandler.askLockerPass(lockerPass);
 
                 boolean lockerSelection = inputHandler.getLockerSelection();
-                if (lockerSelection) {
-                    outputHandler.showPassOrderSummary(selectedPass, lockerPass);
-                }
+                if (!lockerSelection) return;
+                outputHandler.showPassOrderSummary(selectedPass, lockerPass);
             }
+
         } catch (AppException e) {
             outputHandler.showSimpleMessage(e.getMessage());
         } catch (Exception e) {

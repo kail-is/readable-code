@@ -20,13 +20,23 @@ public enum StudyCafePassType {
         return formatString;
     }
 
+    public boolean isHourly() {
+        return this == HOURLY;
+    }
 
+    public boolean isWeekly() {
+        return this == WEEKLY;
+    }
+
+    public boolean isFixed() {
+        return this == FIXED;
+    }
     public static StudyCafePassType fromInput(String userInput) {
-        switch (userInput) {
-            case "1": return HOURLY;
-            case "2": return WEEKLY;
-            case "3": return FIXED;
-            default: throw new IllegalArgumentException("Invalid input: " + userInput);
-        }
+        return switch (userInput) {
+            case "1" -> HOURLY;
+            case "2" -> WEEKLY;
+            case "3" -> FIXED;
+            default -> throw new IllegalArgumentException("Invalid input: " + userInput);
+        };
     }
 }
