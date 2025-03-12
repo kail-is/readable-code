@@ -12,6 +12,22 @@ import java.util.List;
 
 public class StudyCafeFileHandler {
 
+    private StudyCafePassType studyCafePassType;
+
+    public StudyCafeFileHandler(StudyCafePassType studyCafePassType) {
+        this.studyCafePassType = studyCafePassType;
+    }
+
+    public List<StudyCafePass> getHourlyPasses() {
+
+        List<StudyCafePass> studyCafePasses = readStudyCafePasses();
+        return studyCafePasses.stream()
+                .filter(studyCafePass -> studyCafePass.getPassType() == studyCafePassType)
+                .toList();
+    }
+
+
+
     public List<StudyCafePass> readStudyCafePasses() {
         try {
             List<String> lines = Files.readAllLines(Paths.get("src/main/resources/cleancode/studycafe/pass-list.csv"));
