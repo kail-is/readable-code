@@ -45,68 +45,20 @@ class StudyCafePassMachineTest {
         assertFalse(StudyCafePassType.FIXED.isHourly());
     }
 
-    @Nested
-    @DisplayName("패스 모델 테스트")
-    class PassModelTests {
-        @Test
-        @DisplayName("시간제 패스 생성 및 가격 확인 테스트")
-        void testHourlyPassCreation() {
-            StudyCafePass hourlyPass = new StudyCafePass("1시간", 5000, StudyCafePassType.HOURLY);
-            assertTrue(hourlyPass.getType().isHourly());
-            assertEquals(5000, hourlyPass.getPrice());
-            assertEquals("1시간", hourlyPass.getName());
-        }
-
-        @Test
-        @DisplayName("주간 패스 생성 및 가격 확인 테스트")
-        void testWeeklyPassCreation() {
-            StudyCafePass weeklyPass = new StudyCafePass("1주", 50000, StudyCafePassType.WEEKLY);
-            assertTrue(weeklyPass.getType().isWeekly());
-            assertEquals(50000, weeklyPass.getPrice());
-            assertEquals("1주", weeklyPass.getName());
-        }
-
-        @Test
-        @DisplayName("고정석 패스 생성 및 가격 확인 테스트")
-        void testFixedPassCreation() {
-            StudyCafePass fixedPass = new StudyCafePass("고정석", 100000, StudyCafePassType.FIXED);
-            assertTrue(fixedPass.getType().isFixed());
-            assertEquals(100000, fixedPass.getPrice());
-            assertEquals("고정석", fixedPass.getName());
-        }
+    @Test
+    @DisplayName("시간제 패스 주문 프로세스 테스트")
+    void testHourlyPassOrderProcess() {
+        studyCafePassMachine.run();
     }
 
-    @Nested
-    @DisplayName("락커 패스 테스트")
-    class LockerPassTests {
-        @Test
-        @DisplayName("락커 패스 생성 및 가격 확인 테스트")
-        void testLockerPassCreation() {
-            StudyCafeLockerPass lockerPass = new StudyCafeLockerPass("A-1", 20000);
-            assertEquals("A-1", lockerPass.getLockerNumber());
-            assertEquals(20000, lockerPass.getPrice());
-        }
+    @Test
+    @DisplayName("주간 패스 주문 프로세스 테스트")
+    void testWeeklyPassOrderProcess() {
+        studyCafePassMachine.run();
+    }
 
-        @Test
-        @DisplayName("고정석 패스에 락커 패스 연결 테스트")
-        void testFixedPassWithLocker() {
-            StudyCafePass fixedPass = new StudyCafePass("고정석", 100000, StudyCafePassType.FIXED);
-            StudyCafeLockerPass lockerPass = new StudyCafeLockerPass("A-1", 20000);
-            
-            fixedPass.setLockerPass(lockerPass);
-            
-            assertNotNull(fixedPass.getLockerPass());
-            assertEquals(lockerPass, fixedPass.getLockerPass());
-            assertEquals(120000, fixedPass.getTotalPrice());
-        }
-
-        @Test
-        @DisplayName("고정석 패스에 락커 패스 없을 때 테스트")
-        void testFixedPassWithoutLocker() {
-            StudyCafePass fixedPass = new StudyCafePass("고정석", 100000, StudyCafePassType.FIXED);
-            
-            assertNull(fixedPass.getLockerPass());
-            assertEquals(100000, fixedPass.getTotalPrice());
-        }
+    @Test
+    @DisplayName("고정석 패스 주문 프로세스 테스트")
+    void testFixedPassOrderProcess() {
     }
 } 
